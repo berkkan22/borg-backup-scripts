@@ -1,0 +1,4 @@
+borg_backup_scripts/.env
+borg_backup_scripts/log/
+borg_backup_scripts/backups/
+borg_backup_scripts/*.log
