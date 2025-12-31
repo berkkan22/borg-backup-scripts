@@ -43,8 +43,9 @@ fi
 
 log "[INFO] Warracker backup started"
 
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-DUMP_FILE="$WARRACKER_DB_BACKUP_DIR/warracker-db_${TIMESTAMP}.sql.gz"
+# Use a constant dump filename; Borg keeps history, so we avoid
+# creating a new dated dump file on every run.
+DUMP_FILE="$WARRACKER_DB_BACKUP_DIR/warracker-db.sql.gz"
 
 if ! docker exec "$WARRACKER_DB_CONTAINER" \
 	sh -c 'DB_NAME="${POSTGRES_DB:-$POSTGRES_USER}"; pg_dump -U "$POSTGRES_USER" "$DB_NAME" | gzip -c' \

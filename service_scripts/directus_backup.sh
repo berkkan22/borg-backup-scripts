@@ -47,8 +47,9 @@ fi
 
 log "[INFO] Directus backup started"
 
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-DUMP_FILE="$DIRECTUS_DB_BACKUP_DIR/directus-db_${TIMESTAMP}.sql.gz"
+# Use a constant dump filename; Borg keeps history, so we avoid
+# creating a new dated dump file on every run.
+DUMP_FILE="$DIRECTUS_DB_BACKUP_DIR/directus-db.sql.gz"
 
 # Use POSTGRES_USER/POSTGRES_DB from the container environment
 if ! docker exec "$DIRECTUS_DB_CONTAINER" \

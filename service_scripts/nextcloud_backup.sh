@@ -74,9 +74,10 @@ disable_maintenance() {
 }
 
 dump_database() {
-	local timestamp dump_file
-	timestamp="$(date +%Y-%m-%d_%H-%M-%S)"
-	dump_file="$NEXTCLOUD_DB_DUMP_DIR/nextcloud-db_${timestamp}.sql.gz"
+	local dump_file
+	# Use a constant dump filename; Borg keeps history, so we avoid
+	# creating a new dated dump file on every run.
+	dump_file="$NEXTCLOUD_DB_DUMP_DIR/nextcloud-db.sql.gz"
 
 	if ! docker exec "$NEXTCLOUD_DB_CONTAINER" \
 		sh -c "mysqldump -u'$NEXTCLOUD_DB_USER' -p'$NEXTCLOUD_DB_PASSWORD' '$NEXTCLOUD_DB_NAME' | gzip -c" \

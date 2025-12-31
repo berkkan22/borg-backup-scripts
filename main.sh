@@ -17,7 +17,7 @@ PI_IP="localhost"
 BORG_REPO="/mnt/hdd/backups/24fire_private_server_repo" # change
 # BORG_PASSPHRASE="change-me" # or use env / keyfile
 LOGFILE="/home/berkkan/borg_backup_scripts/log/backup.log"
-SERVICE_DIR="./service_scripts"
+SERVICE_DIR="/home/berkkan/borg_backup_scripts/service_scripts"
 NEXTCLOUD_SCRIPT="${SERVICE_DIR}/nextcloud_backup.sh"
 
 HOSTNAME="$(hostname -s)"

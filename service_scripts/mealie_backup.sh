@@ -43,8 +43,9 @@ fi
 
 log "[INFO] Mealie backup started"
 
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-DUMP_FILE="$MEALIE_DB_BACKUP_DIR/mealie-db_${TIMESTAMP}.sql.gz"
+# Use a constant dump filename; Borg keeps history, so we avoid
+# creating a new dated dump file on every run.
+DUMP_FILE="$MEALIE_DB_BACKUP_DIR/mealie-db.sql.gz"
 
 # Determine DB name from POSTGRES_DB or POSTGRES_USER
 if ! docker exec "$MEALIE_DB_CONTAINER" \

@@ -44,8 +44,9 @@ fi
 
 log "[INFO] Umami backup started"
 
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-DUMP_FILE="$UMAMI_DB_BACKUP_DIR/umami-db_${TIMESTAMP}.sql.gz"
+# Use a constant dump filename; Borg keeps history, so we avoid
+# creating a new dated dump file on every run.
+DUMP_FILE="$UMAMI_DB_BACKUP_DIR/umami-db.sql.gz"
 
 if ! docker exec "$UMAMI_DB_CONTAINER" \
 	sh -c 'DB_NAME="${POSTGRES_DB:-$POSTGRES_USER}"; pg_dump -U "$POSTGRES_USER" "$DB_NAME" | gzip -c' \

@@ -43,8 +43,9 @@ fi
 
 log "[INFO] CouchDB backup started"
 
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-BACKUP_FILE="$COUCHDB_BACKUP_DIR/couchdb_files_${TIMESTAMP}.tar.gz"
+# Use a constant backup filename so Borg handles history; avoid
+# creating a new dated archive on every run.
+BACKUP_FILE="$COUCHDB_BACKUP_DIR/couchdb_files.tar.gz"
 
 # For CouchDB, the primary persistent state is in the data and config directories.
 # We create a tar.gz archive of these directories. This is usually sufficient

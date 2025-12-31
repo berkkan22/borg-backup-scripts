@@ -50,9 +50,10 @@ fi
 
 log "[INFO] Paperless backup started"
 
-# 1) Create PostgreSQL dump from DB container
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-DUMP_FILE="$PAPERLESS_BACKUP_DIR/paperless-db_${TIMESTAMP}.sql.gz"
+# 1) Create PostgreSQL dump from DB container. Use a constant dump
+# filename; Borg keeps history, so we avoid creating a new dated
+# dump file on every run.
+DUMP_FILE="$PAPERLESS_BACKUP_DIR/paperless-db.sql.gz"
 
 if ! docker exec "$PAPERLESS_DB_CONTAINER" \
 	sh -c "pg_dump -U '$PAPERLESS_DB_USER' '$PAPERLESS_DB_NAME' | gzip -c" \

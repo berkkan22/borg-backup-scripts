@@ -43,8 +43,9 @@ fi
 
 log "[INFO] Authentik backup started"
 
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-DUMP_FILE="$AUTHENTIK_DB_BACKUP_DIR/authentik-db_${TIMESTAMP}.sql.gz"
+# Use a constant dump filename; Borg keeps history, so we avoid
+# creating a new dated dump file on every run.
+DUMP_FILE="$AUTHENTIK_DB_BACKUP_DIR/authentik-db.sql.gz"
 
 if ! docker exec "$AUTHENTIK_DB_CONTAINER" \
 	sh -c 'DB_NAME="${POSTGRES_DB:-$POSTGRES_USER}"; pg_dump -U "$POSTGRES_USER" "$DB_NAME" | gzip -c' \

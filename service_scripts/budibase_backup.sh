@@ -75,9 +75,9 @@ if ! su - "$RUN_USER" -c "$NODE_BIN $BUDI_BIN --version" >>"$LOGFILE" 2>&1; then
   exit 1
 fi
 
-# Build target backup filename in central backup folder
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
-BACKUP_FILE="$BUDIBASE_BACKUP_DIR/budibase_${TIMESTAMP}.tar.gz"
+# Use a constant backup filename so Borg handles history; avoid
+# creating a new dated archive on every run.
+BACKUP_FILE="$BUDIBASE_BACKUP_DIR/budibase_sql_dump.tar.gz"
 
 # Run Budibase backup as RUN_USER with explicit node/budi paths; on failure, log and echo error, then exit non‑zero
 if ! su - "$RUN_USER" -c "cd '$BUDIBASE_DIR' && $NODE_BIN $BUDI_BIN backups --export --env '$BUDIBASE_ENV_FILE'"; then

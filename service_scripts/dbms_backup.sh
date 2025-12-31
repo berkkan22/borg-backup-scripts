@@ -42,8 +42,6 @@ if ! docker compose ps --status=running --services 2>/dev/null | grep -q .; then
 fi
 
 log "[INFO] DBMS backup started"
-
-TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
 # Determine the Postgres superuser inside the container
 POSTGRES_USER_IN_CONTAINER="$(docker exec "$DBMS_DB_CONTAINER" sh -c 'echo "$POSTGRES_USER"' 2>/dev/null || true)"
 
@@ -65,7 +63,9 @@ fi
 log "[INFO] DBMS will create individual dumps for databases: $DB_LIST"
 
 for db in $DB_LIST; do
-	PER_DB_FILE="$DBMS_BACKUP_DIR/dbms_${db}_${TIMESTAMP}.sql.gz"
+	# Use per-database constant filenames; Borg keeps history, so we
+	# avoid creating new dated dump files on every run.
+	PER_DB_FILE="$DBMS_BACKUP_DIR/dbms_${db}.sql.gz"
 	if ! docker exec "$DBMS_DB_CONTAINER" pg_dump -U "$POSTGRES_USER_IN_CONTAINER" "$db" | gzip -c >"$PER_DB_FILE"; then
 		error "Failed to create DB dump for database '$db' from container $DBMS_DB_CONTAINER"
 		rm -f "$PER_DB_FILE" || true
@@ -81,8 +81,9 @@ for db in $DB_LIST; do
 	log "[INFO] DBMS per-database dump created for '$db' at $PER_DB_FILE"
 done
 
-# Additionally, create a full cluster dump for disaster recovery
-CLUSTER_DUMP_FILE="$DBMS_BACKUP_DIR/dbms-all_${TIMESTAMP}.sql.gz"
+# Additionally, create a full cluster dump for disaster recovery,
+# using a constant filename.
+CLUSTER_DUMP_FILE="$DBMS_BACKUP_DIR/dbms-all.sql.gz"
 
 if ! docker exec "$DBMS_DB_CONTAINER" pg_dumpall -U "$POSTGRES_USER_IN_CONTAINER" | gzip -c >"$CLUSTER_DUMP_FILE"; then
 	error "Failed to create DBMS cluster dump from container $DBMS_DB_CONTAINER"
